@@ -1,1 +1,11 @@
-#aulas de dinamica molecular
+#---------------------Aulas de dinamica molecular---------------------------
+
+
+dymol.py: simulacao simples de dinamica molecular, contem as rotinas do calculo de forcas Lennard Jones e integracao por euler cromer
+
+animation.py: animacao em python usando as funcoes em dymol
+
+PDF.py: calculo da funcao de probabilidade de distâncias (Pair distribution Function)
+
+mru.py: calculo com integraçao de euler cromer de um movimento retilineo uniforme com condição de contorno periódica
+
