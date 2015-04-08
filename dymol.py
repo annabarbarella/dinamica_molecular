@@ -20,6 +20,7 @@ def initial():
     tmax = 4                 #final time of iteraction
     l2 = 25                    #minimum distance for the potencial
     
+    
     """Uniformly distribution of positions"""
     
     nx = np.sqrt(N)            #particles in x
@@ -101,6 +102,13 @@ def period(x,y,X,Y):
     y[(y>= Y)] = y[(y>= Y)] - Y
     return x,y
 
+
+def range_of_steps(s):
+    x,y,vx,vy,X,Y,l2,tmax,dt,N = initial()
+    for i in range(s):
+        fx,fy,V,R2 = forcas(x,y,X,Y,l2)
+        x,y = integrate(x,y,vx,vy,fx,fy,dt)
+    return x,y,fx,fy,V,R2
 
 
 
