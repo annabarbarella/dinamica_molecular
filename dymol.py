@@ -17,7 +17,7 @@ def initial():
     X,Y = 32,32               #box's size
     dt = 0.001                #time interval
     N = 256                   #number of particles
-    tmax = 4                 #final time of iteraction
+    tmax = 15                 #final time of iteraction
     l2 = 25                    #minimum distance for the potencial
     
     
@@ -93,7 +93,7 @@ def integrate(x,y,vx,vy,fx,fy,dt):
     vy += ay*dt
     x += vx*dt 
     y += vy*dt
-    return x,y
+    return x,y,vx,vy
 
 def period(x,y,X,Y):
     x[(x<=0.0)]= X+x[(x<=0.0)]
@@ -103,12 +103,11 @@ def period(x,y,X,Y):
     return x,y
 
 
-def range_of_steps(s):
-    x,y,vx,vy,X,Y,l2,tmax,dt,N = initial()
+def range_of_steps(x,y,vx,vy,X,Y,l2,dt,s):
     for i in range(s):
         fx,fy,V,R2 = forcas(x,y,X,Y,l2)
-        x,y = integrate(x,y,vx,vy,fx,fy,dt)
-    return x,y,fx,fy,V,R2
+        x,y,vx,vy = integrate(x,y,vx,vy,fx,fy,dt)
+    return x,y,vx,vy,fx,fy,V,R2
 
 
 

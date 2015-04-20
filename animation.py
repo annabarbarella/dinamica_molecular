@@ -35,7 +35,7 @@ def animate(i):
     start = time.time()
     global t,x,y,vx,vy,X,Y,l2,tmax,dt,N
     fx,fy,V,R2 = dymol.forcas(x,y,X,Y,l2)
-    x,y = dymol.integrate(x,y,vx,vy,fx,fy,dt)
+    x,y,vx,vy = dymol.integrate(x,y,vx,vy,fx,fy,dt)
     #x,y = period(x,y,X,Y)
     t = t+dt
     print np.sum((vx**2 + vy**2)*0.5) #+sum(V)
@@ -63,7 +63,7 @@ x,y,vx,vy,X,Y,l2,tmax,dt,N = dymol.initial()
 start = time.time()
 while(t<tmax):
     fx,fy,V,R2 = dymol.forcas(x,y,X,Y,l2)
-    x,y = dymol.integrate(x,y,vx,vy,fx,fy,dt)
+    x,y,vx,vy = dymol.integrate(x,y,vx,vy,fx,fy,dt)
     t = t+dt
     k = np.sum(0.5*(vx*vx +vy*vy))
     v = np.sum(V)

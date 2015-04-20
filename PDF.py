@@ -14,7 +14,7 @@ nbins = rmax/dr
 t = 0.
 while(t<tmax):
     fx,fy,V,R2 = dymol.forcas(x,y,X,Y,l2)
-    x,y = dymol.integrate(x,y,vx,vy,fx,fy,dt)
+    x,y,vx,vy = dymol.integrate(x,y,vx,vy,fx,fy,dt)
     t = t+dt
 
 
