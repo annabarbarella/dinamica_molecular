@@ -30,7 +30,7 @@ t = 0.0 # initial time
 #dt = 0.01 # intervals of integration
 frame = int(tmax/dt)
 #verlet radius
-rc,rv = 4.,5.
+rc,rv = 0.,1.2
 #initialize positions
 x,y,vx,vy,X,Y,l2,tmax,dt,N = dymol.initial()
 #while(t<tmax):
@@ -45,12 +45,11 @@ t = 0.
 def animate(i):
     start = time.time()
     global x,y,vx,vy,X,Y,l2,tmax,dt,N,fx,fy,V,R2,xnew,ynew,vlist,t
-    fx,fy,V,R2 = dymol.forcas(x,y,X,Y,l2)
-        
-    x,y,vx,vy = dymol.integrate(x,y,vx,vy,fx,fy,dt)
-    
-    
-    
+    fx,fy,V,R2,vlist = dymol.forcas_verlet(xnew,ynew,x,y,X,Y,l2,R2,rv,rc,vlist)
+    x = np.array(xnew)
+    y = np.array(ynew)
+       
+    xnew,ynew,vx,vy = dymol.integrate(x,y,vx,vy,fx,fy,dt)
         
     t = t+dt
     print np.sum((vx**2 + vy**2)*0.5) #+sum(V)
@@ -72,39 +71,3 @@ def animate(i):
 anim = animation.FuncAnimation(fig, animate, init_func=init,frames=frame, interval=25, blit=True)
 plt.show()
 #------------------------------------------------------------------------------
-
-
-#-------------------------calling the simulation without animation-------------
-t = 0
-E1 = []
-K1 = []
-V1 = []
-tempo=[]
-x,y,vx,vy,X,Y,l2,tmax,dt,N = dymol.initial()
-start = time.time()
-while(t<tmax):
-    fx,fy,V,R2 = dymol.forcas(x,y,X,Y,l2)
-    x,y,vx,vy = dymol.integrate(x,y,vx,vy,fx,fy,dt)
-    t = t+dt
-    k = np.sum(0.5*(vx*vx +vy*vy))
-    v = np.sum(V)
-    tempo.append(t)
-    E1.append(v+k) 
-    K1.append(k)
-    V1.append(v)
-    print v
-    #print '\r',v,
-    #sys.stdout.flush()
-
-
-print 'time do loop: ', time.time()-start
-    
-E1 = np.array(E1)
-tempo = np.array(tempo)
-
-plt.plot(tempo,E1,'m-',ms=1,label="Total energy")
-plt.plot(tempo,K1,'g-',ms=1,label="Kinetic energy")
-plt.plot(tempo,V1,'r-',ms=1,label="Potential energy")
-plt.legend()
-plt.show()
-

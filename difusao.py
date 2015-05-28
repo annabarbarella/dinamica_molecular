@@ -18,6 +18,7 @@ while(t<tmax):
     t += dt
 deltam = 0.
 deltamz = 0.
+
 for j in range(100):
     fx,fy,V,R2 = dymol.forcas(x,y,X,Y,l2)
     x,y,vx,vy = dymol.integrate(x,y,vx,vy,fx,fy,dt)
@@ -39,9 +40,8 @@ for j in range(100):
         deltaz = (vxf*vxi) + (vyf*vyi)
         DELTAR.append(np.mean(deltar))
         DELTAZ.append(np.mean(deltaz))
-        xf,yf,vxf,vyf,fx,fy,V,R2 = dymol.range_of_steps(xf,yf,vxf,vyf,X,Y,l2,dt,100)
-        #tempo.append(t)
-        #t = t+dt
+        xf,yf,vxf,vyf,fx,fy,V,R2 = dymol.range_of_steps(xf,yf,vxf,vyf,X,Y,l2,dt,50)
+           #t = t+dt
     DELTAR = np.array(DELTAR)
     DELTAZ = np.array(DELTAZ)
     deltam += DELTAR
@@ -51,14 +51,19 @@ for j in range(100):
 
 deltam = deltam/100.
 deltamz = deltamz/100.
-tempo = np.arange(8,18,0.1)
+tempo = np.arange(15,20,0.05)
 
 print len(deltam),len(tempo)
+
+plt.title("Difusion")
+plt.text(60, .025,  "$\rho = 1/4$")
 plt.plot(tempo,deltam,'g-',ms=1)
 plt.xlabel("tempo")
 plt.ylabel("r^2")
 plt.show()
 
+plt.title("Difusion")
+plt.text(60, .025,  "$\rho = 1/4$")
 plt.plot(tempo,deltamz,'r-',ms=1)
 plt.xlabel("tempo")
 plt.ylabel("Z")
