@@ -13,10 +13,10 @@ Wroted by Anna Barbara 2015, 31 of March
 #-----------------------initial conditions------------------------------
 def initial():
 
-    X,Y = 16,16            #box's size
+    X,Y = 32,32            #box's size
     dt = 0.001             #time interval
-    N = 256              #number of particles
-    tmax =6.              #final time of iteraction
+    N = 1024              #number of particles
+    tmax =15.              #final time of iteraction
     l2 = 25                #minimum distance for the potencial
     
     

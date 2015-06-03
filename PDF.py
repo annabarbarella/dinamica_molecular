@@ -5,11 +5,11 @@ import sys
 import time
 import dymol
 
-
+"""returns the histomgram of the positions for a given R2 array with the positions"""
 
 def gr(X,Y,R2):
 
-    dr = 0.2
+    dr = 0.25
     rmax = np.sqrt(X**2 + Y**2)
     nbins = rmax/dr
     R = np.sqrt(R2)
@@ -27,12 +27,12 @@ def gr(X,Y,R2):
 
         #normalizacao da area
         #areas dos aneis
-        a = np.pi*(bord[1:]**2 -(bord[:-1])**2)
+    a = np.pi*(bord[1:]**2 -(bord[:-1])**2)
         
-        hist = 2*Hist/a
-        #normalizacao de densidade
-        hist /= (R.shape[0]**2/(X*Y))
-        return c,hist
+    hist = Hist/a
+    #normalizacao de escala
+    hist /= (R.shape[0]**2/(X*Y))
+    return c,hist
 
 
 #plt.plot(c,hist)

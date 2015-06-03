@@ -4,6 +4,7 @@ from matplotlib import animation
 import sys
 import time
 import dymol
+import forcas
 
 x,y,vx,vy,X,Y,l2,tmax,dt,N = dymol.initial()
 #======================== defining plots ====================================
@@ -45,13 +46,13 @@ t = 0.
 def animate(i):
     start = time.time()
     global x,y,vx,vy,X,Y,l2,tmax,dt,N,fx,fy,V,R2,xnew,ynew,vlist,t
-    fx,fy,V,R2 = dymol.forcas(x,y,X,Y,l2)
-        
+    #fx,fy,V,R2 = dymol.forcas(x,y,X,Y,l2)
+    size = len(x)
+    p = np.c_[x,y]
+    fx,fy,V,R2 = forcas.lennardjones(size,p,X,Y,l2)  
+
     x,y,vx,vy = dymol.integrate(x,y,vx,vy,fx,fy,dt)
-    
-    
-    
-        
+     
     t = t+dt
     print np.sum((vx**2 + vy**2)*0.5) #+sum(V)
     
