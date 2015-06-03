@@ -5,9 +5,11 @@ import sys
 import time
 import dymol
 import PDF
+import forcas
 
 #verlet radius
-rc,rv = 0.,1.2
+rc,rv = 2.,3.
+
 #initialize positions
 x,y,vx,vy,X,Y,l2,tmax,dt,N = dymol.initial()
  
@@ -46,7 +48,7 @@ while(t<tmax):
     #vx,vy = dymol.termo_andersen(vx,vy,dt,temp,0.1)
         
 
-    print t
+    #print t
     
 
 
@@ -64,7 +66,7 @@ plt.show()
 
 #Probability density function
 #c,hist = PDF.gr(X,Y,R2)
-hist = Hist/count
+#hist = Hist
 
-plt.plot(c,hist,label="Probability density function")
-plt.show()
+#plt.plot(c,hist,label="Probability density function")
+#plt.show()

@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from matplotlib import animation
 import sys
 import time
-
+import forcas
 """Molecular Dynamics code, for a set of initial conditions simulates
 the dynamics of particles uniformly distibruted submited to a
 potencial (Eg. Lennard Jones).  
@@ -13,9 +13,9 @@ Wroted by Anna Barbara 2015, 31 of March
 #-----------------------initial conditions------------------------------
 def initial():
 
-    X,Y = 32,32            #box's size
+    X,Y = 16,16            #box's size
     dt = 0.001             #time interval
-    N = 1024              #number of particles
+    N = 256              #number of particles
     tmax =15.              #final time of iteraction
     l2 = 25                #minimum distance for the potencial
     
@@ -103,8 +103,9 @@ def forcas_verlet(x,y,xold,yold,X,Y,l2,R2,rv,rc,vlist):
     desloc = np.sqrt((xold -x)**2 + (yold-y)**2)
     
     if (np.any(desloc)>(rv-rc)):
-        print "eu"
-        fx,fy,V,R2 = forcas(x,y,X,Y,l2)
+        p = np.c_[x,y]
+        size = len(x)
+        fx,fy,V,R2 = forcas.lennardjones(size,p,X,Y,l2)
         #calculates verlet lists of idices
         vlist = verletlist(R2,rv,rc)
         
@@ -176,7 +177,7 @@ def range_of_steps(x,y,vx,vy,X,Y,l2,dt,s):
 #Testar o mean square displacement
 def termo_andersen(vx,vy,dt,Temp,nu):
     if (np.random.uniform(0,1) < nu*dt):
-        print "tua vo"
+        
         sig = np.sqrt(Temp)
         vx = np.random.normal(0,sig,len(vx))
         vy = np.random.normal(0,sig,len(vy))

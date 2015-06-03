@@ -20,7 +20,7 @@ K1 = []
 start = time.time()
 tempo = []
 Temp = 1.
-nu = 1.
+nu = 0.1
 
 while(t<tmax):
     
@@ -29,7 +29,8 @@ while(t<tmax):
        
     x,y,vx,vy = dymol.integrate(x,y,vx,vy,fx,fy,dt)
     
-    #vx, vy = dymol.termo_andersen(vx,vy,dt,Temp,nu)
+    vx, vy = dymol.termo_andersen(vx,vy,dt,Temp,nu)
+
     p = np.c_[x,y]
     k = np.sum(0.5*(vx*vx +vy*vy))
     t += dt
@@ -44,7 +45,7 @@ while(t<tmax):
 
 print 'time do loop fortran: ', time.time()-start
 tempo = np.array(tempo)
-
+plt.title("termoandersen")
 plt.plot(tempo,K1,'g-',ms=1,label="Kinetic energy fortran")
 plt.plot(tempo,V1,'r-',ms=1,label="Potential energy fortran")
 plt.show()
