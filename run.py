@@ -20,7 +20,7 @@ K1 = []
 start = time.time()
 tempo = []
 Temp = 1.
-nu = 0.1
+nu = 10
 
 while(t<tmax):
     
