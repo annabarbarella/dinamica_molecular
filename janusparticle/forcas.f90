@@ -86,20 +86,21 @@ subroutine janusparticle(box,p,q,lx,ly,rmim,sig,a,C,fxr,fyr,vr,R2,taur)
                       if(R2(i,j).gt.0.and.R2(i,j).lt.rmim) then
                 
                          V(i,j) = (distqx(i,j)*distx(i,j) + distqy(i,j)*disty(i,j))*C &
-                              *exp(-a*(sqrt(R2(i,j))-sig))/(R2(i,j))
+                              *exp(-a*(sqrt(R2(i,j))-sig))/(R2(i,j)) + 1/R2(i,j)**3.
 
                          fx(i,j) = -(distqx(i,j)*distx(i,j) + distqy(i,j)*disty(i,j))*C &
                               *a*distx(i,j)*exp(-a*(sqrt(R2(i,j))-sig))/(R2(i,j))**(3./2) &
                               -2*(distqx(i,j)*distx(i,j) + distqy(i,j)*disty(i,j))* C & 
                               *distx(i,j)*exp(-a*(sqrt(R2(i,j))-sig))/(R2(i,j))**2 + & 
-                              C*distqx(i,j)*exp(-a*(sqrt(R2(i,j))-sig))/(R2(i,j))
+                              C*distqx(i,j)*exp(-a*(sqrt(R2(i,j))-sig))/(R2(i,j)) &
+                              + 12*(1./sqrt(R2(i,j))**7.)*distx(i,j)
 
                          fy(i,j) = -(distqx(i,j)*distx(i,j) + distqy(i,j)*disty(i,j))*C &
                               *a*disty(i,j)*exp(-a*(sqrt(R2(i,j))-sig))/(R2(i,j))**(3./2) &
                               -2*(distqx(i,j)*distx(i,j) + distqy(i,j)*disty(i,j))* C & 
                               *disty(i,j)*exp(-a*(sqrt(R2(i,j))-sig))/(R2(i,j))**2 + & 
-                              C*distqy(i,j)*exp(-a*(sqrt(R2(i,j))-sig))/(R2(i,j))
-                                                                                
+                              C*distqy(i,j)*exp(-a*(sqrt(R2(i,j))-sig))/(R2(i,j)) &
+                              + 12*(1./sqrt(R2(i,j))**7.)*disty(i,j)
                       else
                          V(i,j) = 0.0
                          fx(i,j) = 0.0

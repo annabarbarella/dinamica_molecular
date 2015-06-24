@@ -13,7 +13,7 @@ x,y,vx,vy,X,Y,l2,tmax,dt,N = dymol.initial()
 # First set up the figure, the axis, and the plot element we want to animate
 fig = plt.figure()
 ax = plt.axes(xlim=(-2, X+2), ylim=(-2, Y+2))
-line, = ax.plot([], [],'mo', ms=5.)
+line, = ax.plot([], [],'mo', ms=15.)
 lines = ax.quiver([],[],[],[],angles="xy")
 time_template = 'time = %.1fs'
 time_text = ax.text(0.05, 0.9, '', transform=ax.transAxes)
@@ -24,9 +24,8 @@ def init():
     line.set_data([], [])
     lines.set_UVC([],[])
     lines.set_offsets([])
-    #lines.set_XY([],[])
     time_text.set_text('')
-    return line, time_text
+    return line,lines,time_text
     
 
 #============================ def animation =======================
@@ -34,59 +33,55 @@ def init():
 t = 0.0 # initial time
 #dt = 0.01 # intervals of integration
 frame = int(tmax/dt)
-#verlet radius
-rc,rv = 4.,5.
+
+
 #initialize positions
 x,y,vx,vy,X,Y,l2,tmax,dt,N = dymol.initial()
-#while(t<tmax):
-#initialize forces and distances and verlet lists
-fx,fy,V,R2 = dymol.forcas(x,y,X,Y,l2)
-xnew,ynew,vx,vy = dymol.integrate(x,y,vx,vy,fx,fy,dt)
-vlist = dymol.verletlist(R2,rv,rc)
 
 t = 0.
 vx,vy = 0*vx,0*vy
+vx[0] = 0.5
+
 theta = 2*np.pi*np.random.rand(len(x))
 w = np.zeros(len(theta))
-a = 10.
-C = 1e-1
+sig = 0.1
+a = 3./sig
+C = 1
 qx = np.cos(theta)
 qy = np.sin(theta)
+#qx,qy = np.ones(len(theta)),np.ones(len(theta))
+#qx[:len(theta)/2.] = -qx[:len(theta)/2.]
+#qy[:len(theta)/2.] = -qy[:len(theta)/2.]
 q = np.c_[qx,qy]
-sig = 1.0
 size = len(x)
+
 def animate(i):
     start = time.time()
-    global x,y,vx,vy,X,Y,l2,tmax,dt,N,fx,fy,V,R2,xnew,ynew,vlist,t,q,a,C,sig,size,theta,tau,w
+    global x,y,vx,vy,X,Y,l2,tmax,dt,N,fx,fy,V,R2,xnew,ynew,vlist,t,q,a,C,sig,size,theta,tau,w,qx,qy
     #fx,fy,V,R2 = dymol.forcas(x,y,X,Y,l2)    
     p = np.c_[x,y]
     #fx,fy,V,R2 = forcas.lennardjones(size,p,X,Y,l2)  
-    fx,fy,V,R2,tau = forcas.janusparticle(size,p,q,X,Y,l2,sig,a,C)
-    x,y,vx,vy = dymol.integrate(x,y,vx,vy,fx,fy,dt)
-    theta, w = dymol.integrate_rot(theta,w,tau,sig,dt)
-    qx = np.cos(theta)
-    qy = np.sin(theta)
-    q = np.c_[qx,qy]
-    q*=0
-    q[30,0]=-1
-    
-    x,y = dymol.period(x,y,X,Y)
-    t = t+dt
-    print np.sum((vx**2 + vy**2)*0.5),w[50] #+sum(V)
-    
+    for i in range(0,50):
+        fx,fy,V,R2,tau = forcas.janusparticle(size,p,q,X,Y,l2,sig,a,C)
+        x,y,vx,vy = dymol.integrate(x,y,vx,vy,fx,fy,dt)
+        qx,qy, w = dymol.integrate_rot(qx,qy,w,tau,sig,dt)
+        #qx = np.cos(theta)
+        #qy = np.sin(theta)
+        q = np.c_[qx,qy]
+        #F.append(fx[5]*fx[5]+fy[5]*fy[5])
+        #D.append(R2[5])
+        t = t+dt
+        x,y = dymol.period(x,y,X,Y)
+    #t = t+dt
+    #print np.sum((vx**2 + vy**2)*0.5),w[5],qx[5],fx[5] #+sum(V)
+    print qx
     
     line.set_data(x, y)
-    #print lines.__dict__
-    #exit()
-    lines.set_UVC(q[:,0],q[:,1])
-    #lines.set_XY(x,y)
-    #lines.set_offsets(x)
+    lines.set_UVC(qx,qy)
+    lines.set_offsets(np.array([x, y]).T)
     time_text.set_text(time_template%(i*dt))
     #print 'time do loop: ', time.time()-start
-    return line, time_text
-
-
-
+    return line,time_text,
 
 
 
@@ -96,38 +91,4 @@ anim = animation.FuncAnimation(fig, animate, init_func=init,frames=frame, interv
 plt.show()
 #------------------------------------------------------------------------------
 
-exit()
-#-------------------------calling the simulation without animation-------------
-t = 0
-E1 = []
-K1 = []
-V1 = []
-tempo=[]
-x,y,vx,vy,X,Y,l2,tmax,dt,N = dymol.initial()
-start = time.time()
-while(t<tmax):
-    fx,fy,V,R2 = dymol.forcas(x,y,X,Y,l2)
-    x,y,vx,vy = dymol.integrate(x,y,vx,vy,fx,fy,dt)
-    t = t+dt
-    k = np.sum(0.5*(vx*vx +vy*vy))
-    v = np.sum(V)
-    tempo.append(t)
-    E1.append(v+k) 
-    K1.append(k)
-    V1.append(v)
-    print v
-    #print '\r',v,
-    #sys.stdout.flush()
-
-
-print 'time do loop: ', time.time()-start
-    
-E1 = np.array(E1)
-tempo = np.array(tempo)
-
-plt.plot(tempo,E1,'m-',ms=1,label="Total energy")
-plt.plot(tempo,K1,'g-',ms=1,label="Kinetic energy")
-plt.plot(tempo,V1,'r-',ms=1,label="Potential energy")
-plt.legend()
-plt.show()
 

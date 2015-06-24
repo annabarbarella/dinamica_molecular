@@ -13,9 +13,9 @@ Wroted by Anna Barbara 2015, 31 of March
 #-----------------------initial conditions------------------------------
 def initial():
 
-    X,Y = 8,8            #box's size
-    dt = 0.01             #time interval
-    N = 64              #number of particles
+    X,Y = 32,32            #box's size
+    dt = 0.001             #time interval
+    N = 2              #number of particles
     tmax =15.              #final time of iteraction
     l2 = 2.                #minimum distance for the potencial
     
@@ -27,9 +27,10 @@ def initial():
     
     #tile = repeat the hole array, reapet = repeat each element
 
-    x = np.tile(np.linspace(0.5,X-0.5,nx),nx) 
-    y = np.repeat(np.linspace(0.5,Y-0.5,ny),ny)
-   
+    #x = np.tile(np.linspace(0.5,X-0.5,nx),nx) 
+    #y = np.repeat(np.linspace(0.5,Y-0.5,ny),ny)
+    x = np.array([15.,16.])#,17.,18.,19.])
+    y = np.array([15.,16.])#,17.,18.,19.])
     
     vx = np.random.normal(0,0.5,N) #normal distribution of velocities
     vy = np.random.normal(0,0.5,N)
@@ -158,15 +159,17 @@ def integrate(x,y,vx,vy,fx,fy,dt):
     Y += vy*dt
     return X,Y,vx,vy
 
-def integrate_rot(theta,w,tau,sig,dt):
+def integrate_rot(thetax,thetay,w,tau,sig,dt):
 
-    THETA = theta.copy()
+    THETAx = thetax.copy()
+    THETAy = thetay.copy()
     W = w.copy()
     I = sig**2/2
     alpha = tau/I
     W += alpha*dt
-    THETA += W*dt
-    return THETA,W
+    THETAx += -W*thetay*dt
+    THETAy += W*thetax*dt
+    return THETAx,THETAy,W
 
 
 
