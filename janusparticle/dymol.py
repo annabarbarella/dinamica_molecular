@@ -32,8 +32,8 @@ def initial():
     x = np.array([15.,16.])#,17.,18.,19.])
     y = np.array([15.,16.])#,17.,18.,19.])
     
-    vx = np.random.normal(0,0.5,N) #normal distribution of velocities
-    vy = np.random.normal(0,0.5,N)
+    vx = np.random.normal(0,0.005,N) #normal distribution of velocities
+    vy = np.random.normal(0,0.005,N)
         
     return x,y,vx,vy,X,Y,l2,tmax,dt,N
 

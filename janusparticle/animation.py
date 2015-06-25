@@ -40,7 +40,7 @@ x,y,vx,vy,X,Y,l2,tmax,dt,N = dymol.initial()
 
 t = 0.
 vx,vy = 0*vx,0*vy
-vx[0] = 0.5
+#vx[0] = 0.5
 
 theta = 2*np.pi*np.random.rand(len(x))
 w = np.zeros(len(theta))
@@ -54,15 +54,15 @@ qy = np.sin(theta)
 #qy[:len(theta)/2.] = -qy[:len(theta)/2.]
 q = np.c_[qx,qy]
 size = len(x)
-
+C2 = 1.
 def animate(i):
     start = time.time()
-    global x,y,vx,vy,X,Y,l2,tmax,dt,N,fx,fy,V,R2,xnew,ynew,vlist,t,q,a,C,sig,size,theta,tau,w,qx,qy
+    global x,y,vx,vy,X,Y,l2,tmax,dt,N,fx,fy,V,R2,xnew,ynew,vlist,t,q,a,C,sig,size,theta,tau,w,qx,qy,C2
     #fx,fy,V,R2 = dymol.forcas(x,y,X,Y,l2)    
     p = np.c_[x,y]
     #fx,fy,V,R2 = forcas.lennardjones(size,p,X,Y,l2)  
-    for i in range(0,50):
-        fx,fy,V,R2,tau = forcas.janusparticle(size,p,q,X,Y,l2,sig,a,C)
+    for i in range(0,2):
+        fx,fy,V,R2,tau = forcas.janusparticle(size,p,q,X,Y,l2,sig,a,C,C2)
         x,y,vx,vy = dymol.integrate(x,y,vx,vy,fx,fy,dt)
         qx,qy, w = dymol.integrate_rot(qx,qy,w,tau,sig,dt)
         #qx = np.cos(theta)
@@ -74,9 +74,9 @@ def animate(i):
         x,y = dymol.period(x,y,X,Y)
     #t = t+dt
     #print np.sum((vx**2 + vy**2)*0.5),w[5],qx[5],fx[5] #+sum(V)
-    print qx
+    print fx
     
-    line.set_data(x, y)
+    #line.set_data(x, y)
     lines.set_UVC(qx,qy)
     lines.set_offsets(np.array([x, y]).T)
     time_text.set_text(time_template%(i*dt))

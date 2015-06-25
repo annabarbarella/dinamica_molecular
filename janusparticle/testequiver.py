@@ -11,9 +11,12 @@ theta = 2*np.pi*np.random.rand(len(x))
 w = np.ones(len(theta))*0.01
 sig = 1.
 a = 3./sig
-C = 1.
-qx = np.cos(theta)
-qy = np.sin(theta)
+C = 1.e-0
+
+#qx = np.cos(theta)
+#qy = np.sin(theta)
+qx = np.array([0.,0.0]) #np.cos(theta)
+qy = np.array([1,-1.0])#np.sin(theta)
 U = qx
 V = qy
 
@@ -32,7 +35,8 @@ s = 0
 print "x",x
 F = []
 D = []
-def update_quiver(num, Q, x, y,s,vx,vy,X,Y,l2,dt,N,t,q,a,C,sig,size,theta,w,qx,qy):
+C2 = 10e-0
+def update_quiver(num, Q, x, y,s,vx,vy,X,Y,l2,dt,N,t,q,a,C,C2,sig,size,theta,w,qx,qy):
     s = s+ num
     global xnew, ynew,vxnew,vynew,wnew,qxnew,qynew
     """updates the horizontal and vertical vector components by a
@@ -44,19 +48,19 @@ def update_quiver(num, Q, x, y,s,vx,vy,X,Y,l2,dt,N,t,q,a,C,sig,size,theta,w,qx,q
         p = np.c_[x,y]
 
     
-        fxnew,fynew,Vnew,R2,tau = forcas.janusparticle(size,p,q,X,Y,l2,sig,a,C)
+        fxnew,fynew,Vnew,R2,tau = forcas.janusparticle(size,p,q,X,Y,l2,sig,a,C,C2)
         xnew,ynew,vxnew,vynew = dymol.integrate(x,y,vx,vy,fxnew,fynew,dt)
     
         qxnew,qynew, wnew = dymol.integrate_rot(qx,qy,w,tau,sig,dt)
         
         xnew,ynew = dymol.period(xnew,ynew,X,Y)
-        print "xnew",xnew
+        print "qxnew",qxnew
     q = np.c_[qxnew,qynew]
     p = np.c_[xnew,xnew]
     #t = t+dt
     
-    fxnew,fynew,Vnew,R2,tau = forcas.janusparticle(size,p,q,X,Y,l2,sig,a,C)
-    xnew,ynew,vxnew,vynew = dymol.integrate(xnew,ynew,vxnew,vynew,fxnew,fynew,dt)
+    fxnew,fynew,Vnew,R2,tau = forcas.janusparticle(size,p,q,X,Y,l2,sig,a,C,C2)
+    #xnew,ynew,vxnew,vynew = dymol.integrate(xnew,ynew,vxnew,vynew,fxnew,fynew,dt)
     
     qxnew,qynew, wnew = dymol.integrate_rot(qxnew,qynew,wnew,tau,sig,dt)
         
@@ -66,8 +70,8 @@ def update_quiver(num, Q, x, y,s,vx,vy,X,Y,l2,dt,N,t,q,a,C,sig,size,theta,w,qx,q
 
         q = np.c_[qxnew,qynew]
         p = np.c_[xnew,xnew]
-        fxnew,fynew,Vnew,R2,tau = forcas.janusparticle(size,p,q,X,Y,l2,sig,a,C)
-        xnew,ynew,vxnew,vynew = dymol.integrate(xnew,ynew,vxnew,vynew,fxnew,fynew,dt)
+        fxnew,fynew,Vnew,R2,tau = forcas.janusparticle(size,p,q,X,Y,l2,sig,a,C,C2)
+        #xnew,ynew,vxnew,vynew = dymol.integrate(xnew,ynew,vxnew,vynew,fxnew,fynew,dt)
     
         qxnew,qynew, wnew = dymol.integrate_rot(qxnew,qynew,wnew,tau,sig,dt)
         
@@ -77,7 +81,7 @@ def update_quiver(num, Q, x, y,s,vx,vy,X,Y,l2,dt,N,t,q,a,C,sig,size,theta,w,qx,q
     F.append(fxnew[0]**2+fynew[0]**2)
     D.append(R2[0,1])
         
-    print "fxnew",fynew
+    print "tau",tau,fxnew
     
     #qxnew,qynew = np.cos(num*0.1),np.sin( num*0.1)
     #U = np.cos( num*0.1)
@@ -91,7 +95,7 @@ def update_quiver(num, Q, x, y,s,vx,vy,X,Y,l2,dt,N,t,q,a,C,sig,size,theta,w,qx,q
 
 # you need to set blit=False, or the first set of arrows never gets
 # cleared on subsequent frames
-anim = animation.FuncAnimation(fig, update_quiver, fargs=(Q, x, y,s,vx,vy,X,Y,l2,dt,N,t,q,a,C,sig,size,theta,w,qx,qy),frames=frame,interval=10, blit=False)
+anim = animation.FuncAnimation(fig, update_quiver, fargs=(Q, x, y,s,vx,vy,X,Y,l2,dt,N,t,q,a,C,C2,sig,size,theta,w,qx,qy),frames=frame,interval=10, blit=False)
 
 plt.show()
 F = np.array(F)
