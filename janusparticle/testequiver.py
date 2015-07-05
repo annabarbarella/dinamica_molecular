@@ -8,15 +8,16 @@ from matplotlib import animation
 
 x,y,vx,vy,X,Y,l2,tmax,dt,N = dymol.initial()
 theta = 2*np.pi*np.random.rand(len(x))
+#w = np.array([0.01,-0.01])#np.ones(len(theta))*0.01
 w = np.ones(len(theta))*0.01
 sig = 1.
-a = 3./sig
-C = 1.e-0
+a = 0.03/sig
+C = 0.1e-0
 
-#qx = np.cos(theta)
-#qy = np.sin(theta)
-qx = np.array([0.,0.0]) #np.cos(theta)
-qy = np.array([1,-1.0])#np.sin(theta)
+qx = np.cos(theta)
+qy = np.sin(theta)
+#qx = np.array([-1.,1.0])#/np.sqrt(2.) #np.cos(theta)
+#qy = np.array([1,0.0])#/np.sqrt(2.) #np.cos(theta)#np.sin(theta)
 U = qx
 V = qy
 
@@ -71,12 +72,13 @@ def update_quiver(num, Q, x, y,s,vx,vy,X,Y,l2,dt,N,t,q,a,C,C2,sig,size,theta,w,q
         q = np.c_[qxnew,qynew]
         p = np.c_[xnew,xnew]
         fxnew,fynew,Vnew,R2,tau = forcas.janusparticle(size,p,q,X,Y,l2,sig,a,C,C2)
-        #xnew,ynew,vxnew,vynew = dymol.integrate(xnew,ynew,vxnew,vynew,fxnew,fynew,dt)
+        xnew,ynew,vxnew,vynew = dymol.integrate(xnew,ynew,vxnew,vynew,fxnew,fynew,dt)
     
         qxnew,qynew, wnew = dymol.integrate_rot(qxnew,qynew,wnew,tau,sig,dt)
         
         xnew,ynew = dymol.period(xnew,ynew,X,Y)
-
+        #qxnew[1],qynew[1] = 1,0.0
+        #xnew[1],ynew[1],ynew[0] = 16.,15.,15
     
     F.append(fxnew[0]**2+fynew[0]**2)
     D.append(R2[0,1])

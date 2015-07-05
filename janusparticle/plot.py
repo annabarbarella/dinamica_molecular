@@ -25,13 +25,13 @@ R2 = distx**2 + disty**2
 R = np.sqrt(R2)
 
     
-fx = -( distqx * distx + distqy * disty) * C * a * distx * exp(-a*(sqrt(R2)-sig))/(R2)**(3./2) \
-     -2 * (distqx * distx + distqy * disty) * C * distx * exp(-a*(sqrt(R2)-sig))/(R2)**2 \
-     + C * distqx * exp(-a*(sqrt(R2)-sig))/(R2)
+fx = +( distqx * distx + distqy * disty) * C * a * distx * exp(-a*(sqrt(R2)-sig))/(R2)**(3./2) \
+     +2 * (distqx * distx + distqy * disty) * C * distx * exp(-a*(sqrt(R2)-sig))/(R2)**2 \
+     - C * distqx * exp(-a*(sqrt(R2)-sig))/(R2)
 
-fy = -( distqx * distx + distqy * disty) * C * a * disty * exp(-a*(sqrt(R2)-sig))/(R2)**(3./2) \
-     -2 * (distqx * distx + distqy * disty) * C * disty * exp(-a*(sqrt(R2)-sig))/(R2)**2 \
-     + C * distqy * exp(-a*(sqrt(R2)-sig))/(R2)
+fy = +( distqx * distx + distqy * disty) * C * a * disty * exp(-a*(sqrt(R2)-sig))/(R2)**(3./2) \
+     +2 * (distqx * distx + distqy * disty) * C * disty * exp(-a*(sqrt(R2)-sig))/(R2)**2 \
+     - C * distqy * exp(-a*(sqrt(R2)-sig))/(R2)
  
 
 U =  (distqx*distx + distqy*disty)*C*exp(-a*(sqrt(R2)-sig))/(R2) 
@@ -49,7 +49,7 @@ F, ax = plt.subplots(1, 2,figsize=(1600/dpi,500/dpi),dpi=dpi)
 
 
 
-ax[0].plot(R, U)#'g.--',ms=5.)
+ax[0].plot(R, np.log10(U))#'g.--',ms=5.)
 
 #plot(distx, fx2,'g.',ms=1.)
 #plot(distx, fx2+fx,'r.',ms=1.)
@@ -57,12 +57,12 @@ ax[0].plot(R, U)#'g.--',ms=5.)
 suptitle("interaction between a pair of particles")
 ax[0].set_xlabel("distance")
 ax[0].set_ylabel("janus potential")
-ax[0].axis([0,0.4,0,7E7])
+#ax[0].axis([0,0.4,0,7E7])
 
-ax[1].plot(R, f,'g',ms=5.)
+ax[1].plot(R, np.log10(fx),'g',ms=5.)
 ax[1].set_xlabel("distance")
 ax[1].set_ylabel("janus force")
-ax[1].axis([0,0.4,0,7E7])
+#ax[1].axis([0,0.4,0,7E7])
 
 
 plt.show()
