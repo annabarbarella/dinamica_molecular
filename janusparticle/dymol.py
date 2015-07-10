@@ -13,9 +13,9 @@ Wroted by Anna Barbara 2015, 31 of March
 #-----------------------initial conditions------------------------------
 def initial():
 
-    X,Y = 8,8            #box's size
+    X,Y = 32,32            #box's size
     dt = 0.001             #time interval
-    N = 64              #number of particles
+    N = 3              #number of particles
     tmax =15.              #final time of iteraction
     l2 = 2.                #minimum distance for the potencial
     
@@ -27,14 +27,29 @@ def initial():
     
     #tile = repeat the hole array, reapet = repeat each element
 
-    x = np.tile(np.linspace(0.5,X-0.5,nx),nx) 
-    y = np.repeat(np.linspace(0.5,Y-0.5,ny),ny)
-    #x = np.array([15.,16.])#,17.,18.,19.])
-    #y = np.array([15.,15.])#,17.,18.,19.])
+    #x=8+2*np.array([-1.,-1.,-1.,1.,1.,1.])
+    #y=8+2*np.array([-1.,0.,1.,-1.,0.,1.])
     
-    vx = np.random.normal(0,0.005,N) #normal distribution of velocities
-    vy = np.random.normal(0,0.005,N)
-        
+    #x = np.tile(np.linspace(0,X/2.,nx+1)[:-1]+X/4.,nx) 
+    #y = np.repeat(np.linspace(0,Y/2.,ny+1)[:-1]+Y/4.,ny)
+    #A = np.linspace(0.5,X-0.5,nx)
+    #B = np.linspace(0.5,Y-0.5,ny)
+    #print A,B
+    
+    #x = np.tile(A,nx)
+    #y = np.repeat(B,ny)
+    #np.random.shuffle(x)
+    #np.random.shuffle(y)
+    
+
+    #x = np.tile(np.linspace(0.5,X-0.5,nx),nx)
+    #y = np.repeat(np.linspace(0.5,Y-0.5,ny),ny)
+    x = np.array([15.,12.,17.])#,18.,19.])
+    y = np.array([15.,15.,17.])#,17.,18.,19.])
+    
+    vx = np.random.normal(0,0.0005,N)*0 #normal distribution of velocities
+    vy = np.random.normal(0,0.0005,N)*0
+    
     return x,y,vx,vy,X,Y,l2,tmax,dt,N
 
 x,y,vx,vy,X,Y,l2,tmax,dt,N = initial() #calling function
@@ -151,22 +166,34 @@ def forcas_verlet(x,y,xold,yold,X,Y,l2,R2,rv,rc,vlist):
 def integrate(x,y,vx,vy,fx,fy,dt):
     X = x.copy()
     Y = y.copy()
-    ax = fx
-    ay = fy
+    ax = fx 
+    ay = fy 
     vx += ax*dt
     vy += ay*dt
     X += vx*dt 
     Y += vy*dt
     return X,Y,vx,vy
 
-def integrate_rot(thetax,thetay,w,tau,sig,dt):
+def integrate_bump(x,y,vx,vy,fx,fy,beta,psi,mass,dt):
+    X = x.copy()
+    Y = y.copy()
+    ax = (fx -beta*vx +psi*(2.*np.random.uniform(-1,1,len(vx))))/mass
+    ay = (fy -beta*vy +psi*(2.*np.random.uniform(-1,1,len(vy))))/mass
+    vx += ax*dt
+    vy += ay*dt
+    X += vx*dt 
+    Y += vy*dt
+    return X,Y,vx,vy
+
+
+def integrate_rot(thetax,thetay,w,tau,sig,mass,dt):
 
     THETAx = thetax.copy()
     THETAy = thetay.copy()
     W = w.copy()
-    I = sig**2/2
+    I = mass*sig**2/2
     alpha = tau/I
-    W = W -W*0.001+ alpha*dt
+    W = W -W*1e-3+ alpha*dt
     THETAx += -W*thetay*dt
     THETAy += W*thetax*dt
     return THETAx,THETAy,W

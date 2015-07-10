@@ -58,10 +58,11 @@ subroutine janusparticle(box,p,q,lx,ly,rmim,sig,a,C,C2,fxr,fyr,vr,R2,taur)
                 real, intent(out) :: R2(box,box)
                 real, intent(out) :: fxr(box),fyr(box),vr(box),taur(box)
                 real :: V(box,box),distx(box,box),disty(box,box),distqx(box,box)
-                real :: distqy(box,box),fx(box,box),fy(box,box),tau(box,box)
+                real :: distqy(box,box),fx(box,box),fy(box,box),tau(box,box),lua
                 
                 integer i,j
                 
+               
                                
                 do i=1,box 
                    distx(:,i) = p(:,1) - p(i,1) 
@@ -73,6 +74,10 @@ subroutine janusparticle(box,p,q,lx,ly,rmim,sig,a,C,C2,fxr,fyr,vr,R2,taur)
                    distqy(:,i) = q(:,2) - q(i,2) 
                 end do
 
+                fx=0
+                fy=0
+                
+                
 
                 
                 !Periodic condition of contour
@@ -84,25 +89,26 @@ subroutine janusparticle(box,p,q,lx,ly,rmim,sig,a,C,C2,fxr,fyr,vr,R2,taur)
                 do i=1,box
                    do j=1,box
                       if(R2(i,j).gt.0.00001) then
-                
-                         V(i,j) = (distqx(i,j)*distx(i,j) + distqy(i,j)*disty(i,j))*C &
-                              *exp(-a*(sqrt(R2(i,j))-sig))/(R2(i,j)) + 1/R2(i,j)**3.
+                         lua = (distqx(i,j)*distx(i,j) + distqy(i,j)*disty(i,j))
+                         
+                         V(i,j) = lua*C*exp(-a*(sqrt(R2(i,j))-sig))/(R2(i,j)) + &
+                              C2*4*((1.0/(R2(i,j)**6))-(1/(R2(i,j)**3)))
 
-                         fx(i,j) = +(distqx(i,j)*distx(i,j) - distqy(i,j)*disty(i,j))*C &
-                              *a*distx(i,j)*exp(-a*(sqrt(R2(i,j))-sig))/(R2(i,j))**(3./2) &
-                              +2*(distqx(i,j)*distx(i,j) + distqy(i,j)*disty(i,j))* C & 
-                              *distx(i,j)*exp(-a*(sqrt(R2(i,j))-sig))/(R2(i,j))**2 - & 
-                              C*distqx(i,j)*exp(-a*(sqrt(R2(i,j))-sig))/(R2(i,j)) 
-                              !- 12*(1./sqrt(R2(i,j))**7.)*distx(i,j)
-
-                         fy(i,j) = +(distqx(i,j)*distx(i,j) -  distqy(i,j)*disty(i,j))*C &
-                              *a*disty(i,j)*exp(-a*(sqrt(R2(i,j))-sig))/(R2(i,j))**(3./2) &
-                              +2*(distqx(i,j)*distx(i,j) + distqy(i,j)*disty(i,j))* C & 
-                              *disty(i,j)*exp(-a*(sqrt(R2(i,j))-sig))/(R2(i,j))**2 - & 
-                              C*distqy(i,j)*exp(-a*(sqrt(R2(i,j))-sig))/(R2(i,j)) 
-                              !- 12*(1./sqrt(R2(i,j))**7.)*disty(i,j)
+                         fx(i,j) = C*exp(-a*(sqrt(R2(i,j))-sig))*(lua &
+                              *a*distx(i,j)/(R2(i,j))**(3./2) +2*lua* & 
+                              distx(i,j)/(R2(i,j))**2 -distqx(i,j)/(R2(i,j))) &
+                          + C2*48*((1.0/(R2(i,j)**(13./2.)))-0.5*(1.0/(R2(i,j)**(7./2.))))*distx(i,j)
 
 
+                        
+                         fy(i,j) = C*exp(-a*(sqrt(R2(i,j))-sig))*(lua &
+                              *a*disty(i,j)/(R2(i,j))**(3./2) +2*lua* & 
+                              disty(i,j)/(R2(i,j))**2 -distqy(i,j)/(R2(i,j))) &
+                         + C2*48*((1.0/(R2(i,j)**(13./2.)))-0.5*(1.0/(R2(i,j)**(7./2.))))*disty(i,j)
+                         
+
+
+                         
                          
                       else
                          V(i,j) = 0.0
@@ -113,21 +119,17 @@ subroutine janusparticle(box,p,q,lx,ly,rmim,sig,a,C,C2,fxr,fyr,vr,R2,taur)
                 end do
 
                 
-                tau = -distx*fy + disty*fx                                
+                tau = distx*fy - disty*fx                                
 
 
-                do i=1,(box-1)
-                   fx(:,1) = fx(:,1) + fx(:,i+1)   
-                   fy(:,1) = fy(:,1) + fy(:,i+1)   
-                   V(:,1) = V(:,1) + V(:,i+1)
-                   tau(:,1) = tau(:,1) + tau(:,i+1)
+                do i=1,box
+                   fxr(i)=SUM(fx(i,:))
+                   fyr(i)=SUM(fy(i,:))
+                   vr(i)=SUM(V(i,:))
+                   taur(i)=SUM(tau(i,:))
                 end do
                 
-                fxr = fx(:,1)
-                fyr = fy(:,1)
-                vr = V(:,1)
-                taur = tau(:,1)
-
+               
 
 
                 
