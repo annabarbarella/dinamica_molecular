@@ -9,11 +9,31 @@ disty =0*np.arange(0.1,3.0,0.001)
 #kb = 1.3e-23 #boltzmann 
 #kb = 1.3e-0 #boltzmann 
 #T = 273 #temprature
+x=1
+theta = 2*np.pi*np.random.rand()
+w = 0.01
+sig = 0.5
+a = 1.5/sig
+T = 300
+kb = 1.38e-5 #cte de boltsmann micrometro X miligramas /s2 X K
+C = 2*T*kb
+#C = 0.001
+mass = 0.02 #miligramas
+qx = np.cos(theta)
+qy = np.sin(theta)
+#qx = np.array([-1.,1.0,1.0]) #np.cos(theta)
+#qy = np.array([0.0,0.0,1.0])#/np.sqrt(2.) #np.cos(theta)#np.sin(theta)1
 
-C = 0.1#6*kb*T #(5-7kbT)
-sig = 1. #(particle radius)
-a = 30./sig 
-e = 1.#/(kb*T)
+U = qx
+V = qy
+t = 0
+s = 0
+C2 = 1.e-0
+beta = 1e-2
+g = 1e-10
+#psi = g*np.sqrt(kb*T*mass*beta/dt)*np.random.normal(0,1,1)
+
+
 
 #orientation
 
